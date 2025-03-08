@@ -1,0 +1,155 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fast Search</title>
+    <style>
+        :root {
+            --bg:black;
+            --text:white;
+            --primary:orange;
+            --highlight:#A52A2A;
+            --shadow: rgba(10, 19, 55, 0.8);
+        }
+
+        body {
+            background: var(--bg);
+            background-image:url('movback.svg');
+            background-attachment:fixed;
+            background-size:cover;
+            color: var(--text);
+            font-family: "Times New Roman", serif;
+            text-align: center;
+            margin: 0;
+            padding: 0px;
+        }
+
+        h2, h3 {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--shadow);
+        }
+
+        #box {
+            margin: 0px 0;
+            display:flex;
+            flex-direction:row;
+            justify-content:space-around;
+            align-items:center;
+            
+        }
+
+        input {
+            padding: 10px;
+            width: 60%;
+            height:30px;
+            border-radius: 7px 14px 7px;
+            
+            border: 1px solid var(--primary);
+            border-top:0px solid orange;
+            border-right:0px solid orange;
+            font-size: 18px;
+            text-align: center;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        div {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 5px;
+            padding: 5px;
+        }
+
+        font {
+            background:var(--highlight);
+            padding: 8px 12px;
+            border-radius: 7px 20px 7px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--bg);
+            transition: 0.3s;
+            border: 1px solid var(--highlight);
+            border-left:1px solid orange;
+        }
+
+        font:hover {
+            transform: scale(1.1);
+        }
+        img{
+        margin-top:10px;
+        width:100%;
+        height:auto;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="ant-track.jpg">
+    
+    <div id="box">
+       <h3 id="tot">Total Words</h3>
+       
+        <input type="text" id="search" placeholder="Search a word...">
+    </div>
+
+    <div id="list">
+        <font>Apple</font>
+        <font>Resilient</font>
+        <font>Style</font>
+        <font>NKN</font>
+        <font>Speed</font>
+        <font>Code</font>
+        <font>Performance</font>
+        <font>Binary</font>
+        <font>Search</font>
+    </div>
+    
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        
+            const input = document.getElementById("search");
+            const words = Array.from(document.querySelectorAll("font"));
+            document.getElementById("tot").innerText=words.length+" Ants";
+            const wordList = words.map(w => w.innerText.toLowerCase()).sort();
+            const wordMap = new Map(words.map(w => [w.innerText.toLowerCase(), w]));
+
+            function search(q) {
+                let l = 0, r = wordList.length - 1;
+                while (l <= r) {
+                    let m = Math.floor((l + r) / 2);
+                    if (wordList[m].startsWith(q)) return m;
+                    wordList[m] < q ? (l = m + 1) : (r = m - 1);
+                }
+                return -1;
+            }
+
+            function filter() {
+                let val = input.value.toLowerCase();
+                if (!val) return words.forEach(w => w.style.display = "inline-block");
+
+                words.forEach(w => w.style.display = "none");
+
+                if (wordMap.has(val)) {
+                    wordMap.get(val).style.display = "inline-block";
+                } else {
+                    let idx = search(val);
+                    if (idx !== -1) {
+                        words.forEach(w => {
+                            if (w.innerText.toLowerCase().startsWith(val)) {
+                                w.style.display = "inline-block";
+                            }
+                        });
+                    }
+                }
+            }
+
+            input.addEventListener("input", filter);
+        });
+    </script>
+
+</body>
+</html>
